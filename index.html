@@ -3,61 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSC Marks Calculator</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Marks Calculator</title>
 </head>
 <body>
-    <div class="calculator-container">
-        <h1>SSC Marks Calculator</h1>
-        <form id="marksForm">
-            <div class="input-group">
-                <label for="subject1">Subject 1 Marks:</label>
-                <input type="number" id="subject1" placeholder="Enter Marks" required>
-            </div>
-            <div class="input-group">
-                <label for="subject2">Subject 2 Marks:</label>
-                <input type="number" id="subject2" placeholder="Enter Marks" required>
-            </div>
-            <div class="input-group">
-                <label for="subject3">Subject 3 Marks:</label>
-                <input type="number" id="subject3" placeholder="Enter Marks" required>
-            </div>
-            <div class="input-group">
-                <label for="subject4">Subject 4 Marks:</label>
-                <input type="number" id="subject4" placeholder="Enter Marks" required>
-            </div>
-            <div class="input-group">
-                <label for="subject5">Subject 5 Marks:</label>
-                <input type="number" id="subject5" placeholder="Enter Marks" required>
-            </div>
-            <div class="input-group">
-                <label for="subject6">Subject 6 Marks:</label>
-                <input type="number" id="subject6" placeholder="Enter Marks" required>
-            </div>
-            <button type="button" onclick="calculateTotal()">Calculate</button>
-            <div class="result">
-                <p>Total Marks: <span id="totalMarks">0</span></p>
-                <p>Percentage: <span id="percentage">0%</span></p>
-            </div>
-        </form>
-    </div>
+    <h1>SSC Exam Marks Calculator</h1>
+    <input type="file" id="fileInput" accept=".html">
+    <button onclick="calculateMarks()">Calculate Marks</button>
+
+    <p id="result"></p>
 
     <script>
-        function calculateTotal() {
-            const marks = [
-                parseFloat(document.getElementById("subject1").value) || 0,
-                parseFloat(document.getElementById("subject2").value) || 0,
-                parseFloat(document.getElementById("subject3").value) || 0,
-                parseFloat(document.getElementById("subject4").value) || 0,
-                parseFloat(document.getElementById("subject5").value) || 0,
-                parseFloat(document.getElementById("subject6").value) || 0,
-            ];
+        function calculateMarks() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please upload an answer key HTML file.');
+                return;
+            }
 
-            const total = marks.reduce((acc, mark) => acc + mark, 0);
-            const percentage = (total / (marks.length * 100)) * 100;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(event.target.result, 'text/html');
+                let totalMarks = 0;
+                let correctCount = 0;
+                let wrongCount = 0;
+                let notAnsweredCount = 0;
 
-            document.getElementById("totalMarks").textContent = total;
-            document.getElementById("percentage").textContent = percentage.toFixed(2) + "%";
+                // Loop through each question in the HTML
+                const questions = doc.querySelectorAll('.question');
+                questions.forEach((question) => {
+                    // Get the correct answer
+                    const correctOption = question.querySelector('.option.correct');
+                    const correctAnswerText = correctOption ? correctOption.textContent.trim().split('. ')[0] : null;
+
+                    // Get the chosen answer and status
+                    const statusText = question.querySelector('.answer-info p:nth-child(1)').textContent.trim();
+                    const chosenAnswerText = question.querySelector('.answer-info p:nth-child(2)').textContent.trim().split(': ')[1];
+
+                    if (statusText.includes('Not Answered')) {
+                        notAnsweredCount++;
+                    } else {
+                        if (chosenAnswerText === correctAnswerText) {
+                            correctCount++;
+                            totalMarks += 2; // +2 for correct answer
+                        } else {
+                            wrongCount++;
+                            totalMarks -= 0.5; // -0.5 for wrong answer
+                        }
+                    }
+                });
+
+                // Display the result
+                const resultElement = document.getElementById('result');
+                resultElement.innerHTML = `
+                    <p>Total Questions: ${questions.length}</p>
+                    <p>Correct Answers: ${correctCount}</p>
+                    <p>Wrong Answers: ${wrongCount}</p>
+                    <p>Not Answered: ${notAnsweredCount}</p>
+                    <p>Total Marks: ${totalMarks}</p>
+                `;
+            };
+
+            reader.readAsText(file);
         }
     </script>
 </body>
