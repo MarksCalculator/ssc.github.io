@@ -9,72 +9,80 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
-        .question {
-            margin-bottom: 20px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        .correct {
-            color: green;
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
         }
-        .incorrect {
-            color: red;
+        th {
+            background-color: #f4f4f4;
         }
-        #result {
-            margin-top: 20px;
-            font-weight: bold;
+        input[type="number"] {
+            width: 50px;
         }
     </style>
 </head>
 <body>
+    <h1>Marks Calculator</h1>
+    <form id="marksForm">
+        <table>
+            <thead>
+                <tr>
+                    <th>Question</th>
+                    <th>Correct Answer</th>
+                    <th>Your Answer</th>
+                    <th>Marks</th>
+                </tr>
+            </thead>
+            <tbody id="questionsTable">
+                <!-- Questions will be dynamically added here -->
+            </tbody>
+        </table>
+        <br>
+        <button type="button" onclick="calculateMarks()">Calculate Marks</button>
+    </form>
+    <h2>Total Marks: <span id="totalMarks">0</span></h2>
 
-<h1>Marks Calculator</h1>
-<form id="quizForm">
-    <!-- Question 1 -->
-    <div class="question">
-        <p>1. What is the capital of France?</p>
-        <label><input type="radio" name="q1" value="a"> a) Berlin</label><br>
-        <label><input type="radio" name="q1" value="b"> b) Paris <span class="correct">✔️</span></label><br>
-        <label><input type="radio" name="q1" value="c"> c) Madrid</label>
-    </div>
-    <!-- Add more questions similarly... -->
-    
-    <!-- Question 2 -->
-    <div class="question">
-        <p>2. What is 2 + 2?</p>
-        <label><input type="radio" name="q2" value="a"> a) 3</label><br>
-        <label><input type="radio" name="q2" value="b"> b) 4 <span class="correct">✔️</span></label><br>
-        <label><input type="radio" name="q2" value="c"> c) 5</label>
-    </div>
-    
-    <!-- Continue for questions 3 to 100... -->
+    <script>
+        const answerKey = [
+            { question: 1, correctAnswer: 'A' },
+            { question: 2, correctAnswer: 'B' },
+            { question: 3, correctAnswer: 'C' },
+            { question: 4, correctAnswer: 'D' },
+            { question: 5, correctAnswer: 'A' }
+        ];
 
-    <button type="button" onclick="calculateMarks()">Submit</button>
-</form>
+        const questionsTable = document.getElementById('questionsTable');
 
-<div id="result"></div>
+        answerKey.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.question}</td>
+                <td>${item.correctAnswer}</td>
+                <td><input type="text" name="answer${item.question}" maxlength="1"></td>
+                <td><input type="number" name="marks${item.question}" value="0" readonly></td>
+            `;
+            questionsTable.appendChild(row);
+        });
 
-<script>
-    function calculateMarks() {
-        const totalQuestions = 100; // Set total number of questions
-        let score = 0;
-
-        // Answers key (assuming b is correct for question 1 and 2)
-        const answers = {
-            q1: 'b',
-            q2: 'b'
-            // Add answers for questions 3 to 100...
-        };
-
-        // Loop through each question and check the selected answer
-        for (let i = 1; i <= totalQuestions; i++) {
-            const selectedAnswer = document.querySelector(`input[name="q${i}"]:checked`);
-            if (selectedAnswer && selectedAnswer.value === answers[`q${i}`]) {
-                score++;
-            }
+        function calculateMarks() {
+            let totalMarks = 0;
+            answerKey.forEach(item => {
+                const userAnswer = document.querySelector(`input[name="answer${item.question}"]`).value.toUpperCase();
+                const marksInput = document.querySelector(`input[name="marks${item.question}"]`);
+                if (userAnswer === item.correctAnswer) {
+                    marksInput.value = 1;
+                    totalMarks += 1;
+                } else {
+                    marksInput.value = 0;
+                }
+            });
+            document.getElementById('totalMarks').innerText = totalMarks;
         }
-
-        document.getElementById('result').innerText = `Your score is: ${score} out of ${totalQuestions}`;
-    }
-</script>
-
+    </script>
 </body>
 </html>
