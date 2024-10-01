@@ -3,14 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marks Calculator</title>
+    <title>Exam Marks Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+        input[type="file"] {
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body>
     <h1>Exam Marks Calculator</h1>
     <input type="file" id="fileInput" accept=".html">
     <button onclick="calculateMarks()">Calculate Marks</button>
 
-    <p id="result"></p>
+    <div id="result"></div>
 
     <script>
         function calculateMarks() {
@@ -35,7 +67,7 @@
                 const questions = doc.querySelectorAll('.question');
                 questions.forEach((question) => {
                     // Get the correct answer (highlighted in green)
-                    const correctOption = question.querySelector('.option[style*="green"]');
+                    const correctOption = question.querySelector('.option[style*="color: green"]');
                     const correctAnswer = correctOption ? correctOption.textContent.trim().split('.')[0] : null;
 
                     // Get the chosen answer and status
@@ -62,7 +94,7 @@
                     <p>Correct Answers: ${correctCount}</p>
                     <p>Wrong Answers: ${wrongCount}</p>
                     <p>Not Answered: ${notAnsweredCount}</p>
-                    <p>Total Marks: ${totalMarks}</p>
+                    <p>Total Marks: ${totalMarks.toFixed(2)}</p>
                 `;
             };
 
