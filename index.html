@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC Marks Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="calculator-container">
+        <h1>SSC Marks Calculator</h1>
+        <form id="marksForm">
+            <div class="input-group">
+                <label for="subject1">Subject 1 Marks:</label>
+                <input type="number" id="subject1" placeholder="Enter Marks" required>
+            </div>
+            <div class="input-group">
+                <label for="subject2">Subject 2 Marks:</label>
+                <input type="number" id="subject2" placeholder="Enter Marks" required>
+            </div>
+            <div class="input-group">
+                <label for="subject3">Subject 3 Marks:</label>
+                <input type="number" id="subject3" placeholder="Enter Marks" required>
+            </div>
+            <div class="input-group">
+                <label for="subject4">Subject 4 Marks:</label>
+                <input type="number" id="subject4" placeholder="Enter Marks" required>
+            </div>
+            <div class="input-group">
+                <label for="subject5">Subject 5 Marks:</label>
+                <input type="number" id="subject5" placeholder="Enter Marks" required>
+            </div>
+            <div class="input-group">
+                <label for="subject6">Subject 6 Marks:</label>
+                <input type="number" id="subject6" placeholder="Enter Marks" required>
+            </div>
+            <button type="button" onclick="calculateTotal()">Calculate</button>
+            <div class="result">
+                <p>Total Marks: <span id="totalMarks">0</span></p>
+                <p>Percentage: <span id="percentage">0%</span></p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function calculateTotal() {
+            const marks = [
+                parseFloat(document.getElementById("subject1").value) || 0,
+                parseFloat(document.getElementById("subject2").value) || 0,
+                parseFloat(document.getElementById("subject3").value) || 0,
+                parseFloat(document.getElementById("subject4").value) || 0,
+                parseFloat(document.getElementById("subject5").value) || 0,
+                parseFloat(document.getElementById("subject6").value) || 0,
+            ];
+
+            const total = marks.reduce((acc, mark) => acc + mark, 0);
+            const percentage = (total / (marks.length * 100)) * 100;
+
+            document.getElementById("totalMarks").textContent = total;
+            document.getElementById("percentage").textContent = percentage.toFixed(2) + "%";
+        }
+    </script>
+</body>
+</html>
