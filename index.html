@@ -3,103 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exam Marks Calculator</title>
+    <title>Marks Calculator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            background-color: #f0f0f0;
-            color: #333;
         }
-        h1 {
-            text-align: center;
-            color: #4CAF50;
+        .question {
+            margin-bottom: 20px;
         }
-        input[type="file"] {
-            margin: 20px 0;
+        .correct {
+            color: green;
         }
-        button {
-            padding: 10px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
+        .incorrect {
+            color: red;
         }
         #result {
             margin-top: 20px;
-            padding: 15px;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <h1>Exam Marks Calculator</h1>
-    <input type="file" id="fileInput" accept=".html">
-    <button onclick="calculateMarks()">Calculate Marks</button>
 
-    <div id="result"></div>
+<h1>Marks Calculator</h1>
+<form id="quizForm">
+    <!-- Question 1 -->
+    <div class="question">
+        <p>1. What is the capital of France?</p>
+        <label><input type="radio" name="q1" value="a"> a) Berlin</label><br>
+        <label><input type="radio" name="q1" value="b"> b) Paris <span class="correct">✔️</span></label><br>
+        <label><input type="radio" name="q1" value="c"> c) Madrid</label>
+    </div>
+    <!-- Add more questions similarly... -->
+    
+    <!-- Question 2 -->
+    <div class="question">
+        <p>2. What is 2 + 2?</p>
+        <label><input type="radio" name="q2" value="a"> a) 3</label><br>
+        <label><input type="radio" name="q2" value="b"> b) 4 <span class="correct">✔️</span></label><br>
+        <label><input type="radio" name="q2" value="c"> c) 5</label>
+    </div>
+    
+    <!-- Continue for questions 3 to 100... -->
 
-    <script>
-        function calculateMarks() {
-            const fileInput = document.getElementById('fileInput');
-            const file = fileInput.files[0];
-            
-            if (!file) {
-                alert('Please upload an answer key HTML file.');
-                return;
+    <button type="button" onclick="calculateMarks()">Submit</button>
+</form>
+
+<div id="result"></div>
+
+<script>
+    function calculateMarks() {
+        const totalQuestions = 100; // Set total number of questions
+        let score = 0;
+
+        // Answers key (assuming b is correct for question 1 and 2)
+        const answers = {
+            q1: 'b',
+            q2: 'b'
+            // Add answers for questions 3 to 100...
+        };
+
+        // Loop through each question and check the selected answer
+        for (let i = 1; i <= totalQuestions; i++) {
+            const selectedAnswer = document.querySelector(`input[name="q${i}"]:checked`);
+            if (selectedAnswer && selectedAnswer.value === answers[`q${i}`]) {
+                score++;
             }
-
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(event.target.result, 'text/html');
-                let totalMarks = 0;
-                let correctCount = 0;
-                let wrongCount = 0;
-                let notAnsweredCount = 0;
-
-                // Loop through each question in the HTML
-                const questions = doc.querySelectorAll('.question');
-                questions.forEach((question) => {
-                    // Get the correct answer (highlighted in green)
-                    const correctOption = question.querySelector('.option[style*="color: green"]');
-                    const correctAnswer = correctOption ? correctOption.textContent.trim().split('.')[0] : null;
-
-                    // Get the chosen answer and status
-                    const statusText = question.querySelector('.answer-info p:nth-child(1)').textContent.trim();
-                    const chosenAnswer = question.querySelector('.answer-info p:nth-child(2)').textContent.trim().split(': ')[1];
-
-                    if (statusText.includes('Not Answered')) {
-                        notAnsweredCount++;
-                    } else {
-                        if (chosenAnswer === correctAnswer) {
-                            correctCount++;
-                            totalMarks += 2; // +2 for correct answer
-                        } else {
-                            wrongCount++;
-                            totalMarks -= 0.5; // -0.5 for wrong answer
-                        }
-                    }
-                });
-
-                // Display the result
-                const resultElement = document.getElementById('result');
-                resultElement.innerHTML = `
-                    <p>Total Questions: ${questions.length}</p>
-                    <p>Correct Answers: ${correctCount}</p>
-                    <p>Wrong Answers: ${wrongCount}</p>
-                    <p>Not Answered: ${notAnsweredCount}</p>
-                    <p>Total Marks: ${totalMarks.toFixed(2)}</p>
-                `;
-            };
-
-            reader.readAsText(file);
         }
-    </script>
+
+        document.getElementById('result').innerText = `Your score is: ${score} out of ${totalQuestions}`;
+    }
+</script>
+
 </body>
 </html>
